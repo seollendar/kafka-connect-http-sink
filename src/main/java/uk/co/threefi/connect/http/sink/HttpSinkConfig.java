@@ -34,6 +34,11 @@ public class HttpSinkConfig extends AbstractConfig {
         DELETE;
     }
 
+    public static final String RESPONSE_TOPIC = "response.topic";
+    private static final String RESPONSE_TOPIC_DOC = "response.topic.";
+    private static final String RESPONSE_TOPIC_DISPLAY = "response topic";
+    //private static final String RESPONSE_TOPIC_DEFAULT = "res";
+    
     public static final String HTTP_API_URL = "http.api.url";
     private static final String HTTP_API_URL_DOC = "HTTP API URL.";
     private static final String HTTP_API_URL_DISPLAY = "HTTP URL";
@@ -124,6 +129,7 @@ public class HttpSinkConfig extends AbstractConfig {
 
 
     public static final ConfigDef CONFIG_DEF = new ConfigDef()
+   		
             // Connection
             .define(
                     HTTP_API_URL,
@@ -136,7 +142,7 @@ public class HttpSinkConfig extends AbstractConfig {
                     ConfigDef.Width.LONG,
                     HTTP_API_URL_DISPLAY
             )
-
+            
             // Retries
             .define(
                     MAX_RETRIES,
@@ -195,6 +201,17 @@ public class HttpSinkConfig extends AbstractConfig {
                     4,
                     ConfigDef.Width.SHORT,
                     HEADER_SEPERATOR_DISPLAY
+            )
+            .define(
+            		RESPONSE_TOPIC,
+                    ConfigDef.Type.STRING,
+                    ConfigDef.NO_DEFAULT_VALUE,
+                    ConfigDef.Importance.HIGH,
+                    RESPONSE_TOPIC_DOC,
+                    CONNECTION_GROUP,
+                    5,
+                    ConfigDef.Width.LONG,
+                    RESPONSE_TOPIC_DISPLAY
             )
             .define(
                     REGEX_PATTERNS,
@@ -285,6 +302,7 @@ public class HttpSinkConfig extends AbstractConfig {
                     BATCH_SEPARATOR_DISPLAY
             );
 
+    public final String ResponseTopic;
     public final String httpApiUrl;
     public final RequestMethod requestMethod;
     public final int maxRetries;
@@ -303,6 +321,7 @@ public class HttpSinkConfig extends AbstractConfig {
 
     public HttpSinkConfig(Map<?, ?> props) {
         super(CONFIG_DEF, props);
+        ResponseTopic = getString(RESPONSE_TOPIC);
         httpApiUrl = getString(HTTP_API_URL);
         maxRetries = getInt(MAX_RETRIES);
         retryBackoffMs = getInt(RETRY_BACKOFF_MS);
@@ -318,7 +337,28 @@ public class HttpSinkConfig extends AbstractConfig {
         batchSuffix = getString(BATCH_SUFFIX);
         batchSeparator = getString(BATCH_SEPARATOR);
     }
-
+    
+//    public String getHttpSinkConfig() {
+//        super(CONFIG_DEF, props);
+//        ResponseTopic = getString(RESPONSE_TOPIC);
+//        httpApiUrl = getString(HTTP_API_URL);
+//        maxRetries = getInt(MAX_RETRIES);
+//        retryBackoffMs = getInt(RETRY_BACKOFF_MS);
+//        requestMethod = RequestMethod.valueOf(getString(REQUEST_METHOD).toUpperCase());
+//        headers = getString(HEADERS);
+//        headerSeparator = getString(HEADER_SEPERATOR);
+//        regexPatterns = getString(REGEX_PATTERNS);
+//        regexReplacements = getString(REGEX_REPLACEMENTS);
+//        regexSeparator = getString(REGEX_SEPARATOR);
+//        batchKeyPattern = getString(BATCH_KEY_PATTERN);
+//        batchMaxSize = getInt(BATCH_MAX_SIZE);
+//        batchPrefix = getString(BATCH_PREFIX);
+//        batchSuffix = getString(BATCH_SUFFIX);
+//        batchSeparator = getString(BATCH_SEPARATOR);
+//        
+//        return ResponseTopic;
+//    }
+    
 
     private static class EnumValidator implements ConfigDef.Validator {
         private final List<String> canonicalValues;

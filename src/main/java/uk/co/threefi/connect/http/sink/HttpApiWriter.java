@@ -37,7 +37,6 @@ public class HttpApiWriter {
     private final HttpSinkConfig config;
     private static final Logger log = LoggerFactory.getLogger(HttpApiWriter.class);
     private Map<String, List<SinkRecord>> batches = new HashMap<>();
-    private static final String TOPIC_NAME = "res"; //토픽명
     private KafkaProducer<String, String> producer;
     
     
@@ -51,6 +50,8 @@ public class HttpApiWriter {
 
 		producer = new KafkaProducer<String, String>(prop);
     }
+
+    
 
     public void write(final Collection<SinkRecord> records) throws IOException {
 
@@ -158,10 +159,13 @@ public class HttpApiWriter {
                     + ", Submitted payload: " + builder.toString()
                     + ", url:" + formattedUrl);
         }
+        
+        //"config" - response.topic
+        log.info("SSUL config.ResponseTopic: " +  config.ResponseTopic);
         //builder.toString() : response body
         log.info("SSUL HTTP Response code: " +  builder.toString());
 
-        producer.send(new ProducerRecord<String,String>(TOPIC_NAME, builder.toString()));
+        producer.send(new ProducerRecord<String,String>(config.ResponseTopic, builder.toString()));
 
         log.debug(", response code: " + status
                 + ", " + con.getResponseMessage()
